@@ -5,31 +5,24 @@ import io
 
 st.markdown("# 📊 Análisis de Reconocimiento Facial")
 
-# Subir archivos HTML
+
 st.markdown("## 📂 Selecciona archivos de reconocimiento facial")
 uploaded_files = st.file_uploader("📎 Sube tus archivos HTML", type=["htm", "html"], accept_multiple_files=True)
 
 if uploaded_files:
     for uploaded_file in uploaded_files:
         try:
-            # Leer el archivo HTML y extraer la tabla
             df_list = pd.read_html(uploaded_file)
             if not df_list:
                 st.error(f"⚠️ No se encontraron tablas en el archivo {uploaded_file.name}.")
                 continue
             
-            df = df_list[0]  # Tomar la primera tabla encontrada
+            df = df_list[0]
             
-            # Detectar y renombrar columnas duplicadas
             df.columns = pd.Index([f"{col}_{i}" if col in df.columns[:i] else col for i, col in enumerate(df.columns)])
             
-            # Renombrar columnas para mayor compatibilidad
             df.rename(columns={"Nombre completo": "Nombre", "Lista de verificación": "Lista de verificacion"}, inplace=True)
             
-            # Mostrar columnas detectadas antes del análisis
-            
-
-            # Diccionario para renombrar columnas según las esperadas
             nombres_esperados = {
                 "Dia": ["Dia", "Fecha", "Timestamp"],
                 "Nombre": ["Nombre", "Nombre completo", "Rostro reconocido"],
@@ -41,7 +34,6 @@ if uploaded_files:
             renombres = {col: nuevo_nombre for nuevo_nombre, posibles in nombres_esperados.items() for col in df.columns if col in posibles}
             df.rename(columns=renombres, inplace=True)
             
-            # Identificar tipo de reporte
             tipo_reporte = ""
             if "Nombre" in df.columns and "ID" in df.columns:
                 st.markdown(f"### 📄 Reporte de Rostros Reconocidos ({uploaded_file.name})")
