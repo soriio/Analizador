@@ -86,7 +86,7 @@ if uploaded_files:
         
         personas_por_camara_lista = df_reconocidos.groupby(["Camara", "Lista de verificacion"]).size().reset_index(name="Cantidad")
         st.write("📋 **Resumen de Datos:**")
-        st.write(personas_por_camara_lista[["Camara", "Lista de verificacion", "Cantidad"]])
+        st.write(personas_por_camara_lista)
         
         fig, ax = plt.subplots(figsize=(8, 5))
         for lista in personas_por_camara_lista["Lista de verificacion"].unique():
