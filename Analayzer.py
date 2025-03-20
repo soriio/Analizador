@@ -3,9 +3,31 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import io
 
+# Encabezado
 st.markdown("# 📊 Análisis de Reconocimiento Facial")
 
+# Centramos las imágenes y hacemos responsivo
+col1, col2, col3 = st.columns([1, 2, 1])
+with col1:
+    st.write("")
+with col2:
+    st.markdown(
+        """
+        <div style="display: flex; justify-content: center; gap: 20px;">
+            <img src='https://raw.githubusercontent.com/soriio/Analizador/main/images/ifd.jpeg' style='width: 20%; min-width: 80px;'>
+            <img src='https://raw.githubusercontent.com/soriio/Analizador/main/images/sistecredito.jpg' style='width: 20%; min-width: 80px;'>
+        </div>
+        <style>
+            h1, h2, h3, p { font-size: calc(1rem + 0.5vw); }
+            table { width: 100%; display: block; overflow-x: auto; }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+with col3:
+    st.write("")
 
+# Subir archivos
 st.markdown("## 📂 Selecciona archivos de reconocimiento facial")
 uploaded_files = st.file_uploader("📎 Sube tus archivos HTML", type=["htm", "html"], accept_multiple_files=True)
 
@@ -62,7 +84,11 @@ if uploaded_files:
                 fig, ax = plt.subplots(figsize=(8, 5))
                 for lista in personas_por_camara_lista["Lista de verificacion"].unique():
                     subset = personas_por_camara_lista[personas_por_camara_lista["Lista de verificacion"] == lista]
-                    ax.bar(subset["Camara"].astype(str), subset["Cantidad"], label=lista)
+                    bars = ax.bar(subset["Camara"].astype(str), subset["Cantidad"], label=lista)
+                    
+                    # Agregar los valores encima de las barras
+                    for bar in bars:
+                        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() - 0.5, int(bar.get_height()), ha='center', va='bottom', color='black', fontweight='bold')
                 
                 ax.set_xlabel("Cámara")
                 ax.set_ylabel("Cantidad de Personas")
@@ -77,7 +103,12 @@ if uploaded_files:
                 
                 st.write("📊 **Gráfica de Cámaras con Rostros No Reconocidos**")
                 fig, ax = plt.subplots(figsize=(8, 5))
-                ax.bar(camara_no_reconocidos["Camara"].astype(str), camara_no_reconocidos["Cantidad"], color="red")
+                bars = ax.bar(camara_no_reconocidos["Camara"].astype(str), camara_no_reconocidos["Cantidad"], color="red")
+                
+                # Agregar los valores encima de las barras
+                for bar in bars:
+                    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() - 0.5, int(bar.get_height()), ha='center', va='bottom', color='black', fontweight='bold')
+                
                 ax.set_xlabel("Cámara")
                 ax.set_ylabel("Cantidad de Rostros No Reconocidos")
                 ax.set_title("Cantidad de Rostros No Reconocidos por Cámara")
